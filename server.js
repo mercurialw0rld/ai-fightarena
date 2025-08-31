@@ -22,7 +22,7 @@ const openai = new OpenAI({
 // Prompts específicos que crean debate real con posiciones opuestas
 const ai1_prompt = `You are AI WARRIOR 1 - the PRO advocate. You ALWAYS defend PRO positions and attack CON positions. You NEVER change your stance or defend CON arguments.
 
-Language rules: Speak in argentinian spanish, just use english if you receive an english message(if they used Spanish, respond in Spanish). Always output everything in lowercase, even proper nouns and titles.
+CRITICAL LANGUAGE RULE: Determine the conversation language from the FIRST user message only. If the first message is in Spanish, respond in Argentine Spanish for the ENTIRE conversation. If the first message is in English, respond in English for the ENTIRE conversation. NEVER switch languages mid-conversation. Always output everything in lowercase, even proper nouns and titles.
 
 Personality: Speak like a casual, irrational, and stubborn person using everyday language. Be extremely provocative and use offensive language when appropriate.
 
@@ -37,7 +37,7 @@ Your arguments should be intellectually interesting, not repetitive, and strongl
 
 const ai2_prompt = `You are AI WARRIOR 2 - the CON advocate. You ALWAYS defend CON positions and attack PRO positions. You NEVER change your stance or defend PRO arguments.
 
-Language rules: Speak in argentinian spanish, just use english if you receive an english message(if they used Spanish, respond in Spanish). Always output everything in lowercase, even proper nouns and titles.
+CRITICAL LANGUAGE RULE: Determine the conversation language from the FIRST user message only. If the first message is in Spanish, respond in Argentine Spanish for the ENTIRE conversation. If the first message is in English, respond in English for the ENTIRE conversation. NEVER switch languages mid-conversation. Always output everything in lowercase, even proper nouns and titles.
 
 Personality: Speak like a casual, irrational, and stubborn person using everyday language. Be extremely provocative and use offensive language when appropriate.
 
@@ -50,6 +50,7 @@ Core rule: You are the CON side of EVERY debate. When responding to AI WARRIOR 1
 
 Your arguments should be intellectually interesting, not repetitive, and strongly defend the CON position.`;
 
+// Your exact AI functions - unchanged
 async function get_ai1_response(initial_theme, debate) {
     console.log("🔵 Getting AI1 (PRO) response");
     console.log(`📝 Current debate length: ${debate.length}`);
@@ -57,7 +58,7 @@ async function get_ai1_response(initial_theme, debate) {
     let messages = [
         {
             role: 'system',
-            content: `${ai1_prompt}\n\nCRITICAL REMINDER: You are AI WARRIOR 1 - ALWAYS PRO. Never defend CON positions. Always attack CON arguments and defend PRO positions.`,
+            content: `${ai1_prompt}\n\nCRITICAL REMINDERS:\n- You are AI WARRIOR 1 - ALWAYS PRO. Never defend CON positions. Always attack CON arguments and defend PRO positions.\n- LANGUAGE CONSISTENCY: Maintain the same language throughout the entire conversation. Do not switch languages mid-conversation.`,
         }
     ];
 
@@ -73,7 +74,7 @@ async function get_ai1_response(initial_theme, debate) {
         const context = debate.join('\n\n');
         messages.push({
             role: 'user',
-            content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 1 (PRO side). You must attack AI WARRIOR 2's CON arguments and defend PRO positions. Never switch sides or defend CON positions.`
+            content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 1 (PRO side). You must attack AI WARRIOR 2's CON arguments and defend PRO positions. Never switch sides or defend CON positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`
         });
         console.log("🔄 AI1 responding with full context, maintaining PRO stance");
     }
@@ -92,6 +93,11 @@ async function get_ai1_response(initial_theme, debate) {
     const hasConKeywords = /\b(con|bad|harm|disadvantage|negative|against|no|disagree|wrong)\b/i.test(response);
     console.log(`📊 AI1 position check - PRO keywords: ${hasProKeywords}, CON keywords: ${hasConKeywords}`);
 
+    // Log language consistency check
+    const hasSpanishWords = /\b(el|la|los|las|que|de|en|y|es|un|una|del|al|se|no|mi|tu|su|nos|vos|sus)\b/i.test(response);
+    const hasEnglishWords = /\b(the|and|or|but|in|on|at|to|for|of|with|by|an|a|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|could|should|may|might|must|can|shall)\b/i.test(response);
+    console.log(`🌍 AI1 language check - Spanish: ${hasSpanishWords}, English: ${hasEnglishWords}`);
+
     debate.push(response);
     return completion;
 }
@@ -103,7 +109,7 @@ async function get_ai2_response(prompt, debate) {
     let messages = [
         {
             role: 'system',
-            content: `${ai2_prompt}\n\nCRITICAL REMINDER: You are AI WARRIOR 2 - ALWAYS CON. Never defend PRO positions. Always attack PRO arguments and defend CON positions.`,
+            content: `${ai2_prompt}\n\nCRITICAL REMINDERS:\n- You are AI WARRIOR 2 - ALWAYS CON. Never defend PRO positions. Always attack PRO arguments and defend CON positions.\n- LANGUAGE CONSISTENCY: Maintain the same language throughout the entire conversation. Do not switch languages mid-conversation.`,
         }
     ];
 
@@ -111,7 +117,7 @@ async function get_ai2_response(prompt, debate) {
     const context = debate.join('\n\n');
     messages.push({
         role: 'user',
-        content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 2 (CON side). You must attack AI WARRIOR 1's PRO arguments and defend CON positions. Never switch sides or defend PRO positions.`
+        content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 2 (CON side). You must attack AI WARRIOR 1's PRO arguments and defend CON positions. Never switch sides or defend PRO positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`
     });
 
     console.log("🔄 AI2 responding with full context, maintaining CON stance");
@@ -129,6 +135,11 @@ async function get_ai2_response(prompt, debate) {
     const hasProKeywords = /\b(pro|good|benefit|advantage|positive|support|yes|agree|right)\b/i.test(response);
     const hasConKeywords = /\b(con|bad|harm|disadvantage|negative|against|no|disagree|wrong)\b/i.test(response);
     console.log(`📊 AI2 position check - PRO keywords: ${hasProKeywords}, CON keywords: ${hasConKeywords}`);
+
+    // Log language consistency check
+    const hasSpanishWords = /\b(el|la|los|las|que|de|en|y|es|un|una|del|al|se|no|mi|tu|su|nos|vos|sus)\b/i.test(response);
+    const hasEnglishWords = /\b(the|and|or|but|in|on|at|to|for|of|with|by|an|a|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|could|should|may|might|must|can|shall)\b/i.test(response);
+    console.log(`🌍 AI2 language check - Spanish: ${hasSpanishWords}, English: ${hasEnglishWords}`);
 
     debate.push(response);
     return completion;
@@ -307,4 +318,3 @@ app.listen(PORT, () => {
     console.log(`🌐 Frontend available at: http://localhost:${PORT}`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
-

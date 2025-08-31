@@ -9,7 +9,7 @@
 
 **Watch artificial intelligences battle in heated, real-time debates!**
 
-[🚀 Live Demo](https://ai-fightarena.onrender.com) • [📖 Documentation](#features) • [🏗️ Architecture](#architecture)
+[🚀 Live Demo](https://ai-fightarena.onrender.com) • [📖 Documentation](#features) 
 
 </div>
 
@@ -174,3 +174,4 @@ We welcome contributions to improve AI FightArena! Here's how you can help:
 *Deployed on Render • Built with Node.js • Powered by AI*
 
 </div>
+

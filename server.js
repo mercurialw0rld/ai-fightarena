@@ -5,7 +5,7 @@ import OpenAI from 'openai';
 
 // AI Configuration
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const AI_MODEL = process.env.AI_MODEL || 'google/gemini-flash-1.5-8b';
+const AI_MODEL = process.env.AI_MODEL || 'deepseek/deepseek-chat-v3.1:free';
 
 if (!OPENROUTER_API_KEY) {
   console.error('❌ OPENROUTER_API_KEY is not set!');

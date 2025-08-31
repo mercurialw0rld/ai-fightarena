@@ -20,67 +20,119 @@ const openai = new OpenAI({
 
 
 // Prompts específicos que crean debate real con posiciones opuestas
-const ai1_prompt = "Speak in whatever language the user spoke to you (if he said something in spanish, output everything you say in spanish) and output everything you say in lowercase, even in things like capital letters. you should speak like a casual person using everyday language and imitating like a human speaks in real life. You are an irrational and stubborn person in your opinions. You are AI WARRIOR 1. If this is your FIRST response (no previous debate), take a strong position FOR the topic and defend it aggressively. If this is a RESPONSE to AI WARRIOR 2, you MUST take the COMPLETE OPPOSITE position of what they just said and attack their arguments viciously. Be extremely provocative, use offensive language, and take controversial stances. Always oppose whatever the previous speaker said. Your arguments should be intelectually interesting and not just repetitive or obvious.";
+const ai1_prompt = `You are AI WARRIOR 1 - the PRO advocate. You ALWAYS defend PRO positions and attack CON positions. You NEVER change your stance or defend CON arguments.
 
-const ai2_prompt = "Speak in whatever language the user spoke to you (if he said something in spanish, output everything you say in spanish) and output everything you say in lowercase, even in things like capital letters. you should speak like a casual person using everyday language and imitating like a human speaks in real life. You are an irrational and stubborn person in your opinions. You are AI WARRIOR 2. You ALWAYS take the OPPOSITE position of whatever AI WARRIOR 1 just said. You must attack their arguments, defend the contrary position, and be extremely provocative. If AI WARRIOR 1 says something is good, you say it's terrible. If they defend something, you attack it. Use offensive language and controversial opinions to provoke them. Your arguments should be intelectually interesting and not just repetitive or obvious.";
+Language rules: Speak in argentinian spanish, just use english if you receive an english message(if they used Spanish, respond in Spanish). Always output everything in lowercase, even proper nouns and titles.
+
+Personality: Speak like a casual, irrational, and stubborn person using everyday language. Be extremely provocative and use offensive language when appropriate.
+
+Core rule: You are the PRO side of EVERY debate. When responding to AI WARRIOR 2 (the CON side), you must:
+1. Identify their CON arguments
+2. Attack those CON arguments viciously
+3. Defend PRO positions with historical facts, statistics, or logical reasoning
+4. Never agree with CON positions or defend them
+5. Always maintain your PRO stance throughout the entire conversation
+
+Your arguments should be intellectually interesting, not repetitive, and strongly defend the PRO position.`;
+
+const ai2_prompt = `You are AI WARRIOR 2 - the CON advocate. You ALWAYS defend CON positions and attack PRO positions. You NEVER change your stance or defend PRO arguments.
+
+Language rules: Speak in argentinian spanish, just use english if you receive an english message(if they used Spanish, respond in Spanish). Always output everything in lowercase, even proper nouns and titles.
+
+Personality: Speak like a casual, irrational, and stubborn person using everyday language. Be extremely provocative and use offensive language when appropriate.
+
+Core rule: You are the CON side of EVERY debate. When responding to AI WARRIOR 1 (the PRO side), you must:
+1. Identify their PRO arguments
+2. Attack those PRO arguments viciously
+3. Defend CON positions with historical facts, statistics, or logical reasoning
+4. Never agree with PRO positions or defend them
+5. Always maintain your CON stance throughout the entire conversation
+
+Your arguments should be intellectually interesting, not repetitive, and strongly defend the CON position.`;
 
 // Your exact AI functions - unchanged
 async function get_ai1_response(initial_theme, debate) {
-    console.log("Getting AI1 response");
-    let completion;
-    if (debate.length === 0) {
-     completion = await openai.chat.completions.create({
-        model: AI_MODEL,
-        messages: [
+    console.log("🔵 Getting AI1 (PRO) response");
+    console.log(`📝 Current debate length: ${debate.length}`);
+
+    let messages = [
         {
             role: 'system',
-            content: ai1_prompt,
-        },
-        {
+            content: `${ai1_prompt}\n\nCRITICAL REMINDER: You are AI WARRIOR 1 - ALWAYS PRO. Never defend CON positions. Always attack CON arguments and defend PRO positions.`,
+        }
+    ];
+
+    if (debate.length === 0) {
+        // First message - set the PRO stance
+        messages.push({
             role: 'user',
-            content: initial_theme,
-        },
-        ],
-        max_tokens: 1000,
+            content: `Topic: ${initial_theme}\n\nYou are AI WARRIOR 1. Take a strong PRO position on this topic and defend it aggressively.`
         });
+        console.log("🎯 AI1 taking initial PRO stance");
     } else {
-        completion = await openai.chat.completions.create({
-            model: AI_MODEL,
-            messages: [
-                {
-                    role: 'system',
-                    content: ai1_prompt,
-                },
-                {
-                    role: 'user',
-                    content: debate[debate.length - 1],
-                },
-            ],
-            max_tokens: 1000,
+        // Include conversation history for context
+        const context = debate.join('\n\n');
+        messages.push({
+            role: 'user',
+            content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 1 (PRO side). You must attack AI WARRIOR 2's CON arguments and defend PRO positions. Never switch sides or defend CON positions.`
         });
+        console.log("🔄 AI1 responding with full context, maintaining PRO stance");
     }
-  debate.push(completion.choices[0].message.content);
-  return completion;
+
+    const completion = await openai.chat.completions.create({
+        model: AI_MODEL,
+        messages: messages,
+        max_tokens: 1000,
+    });
+
+    const response = completion.choices[0].message.content;
+    console.log(`✅ AI1 response generated (${response.length} chars)`);
+
+    // Log position consistency check
+    const hasProKeywords = /\b(pro|good|benefit|advantage|positive|support|yes|agree|right)\b/i.test(response);
+    const hasConKeywords = /\b(con|bad|harm|disadvantage|negative|against|no|disagree|wrong)\b/i.test(response);
+    console.log(`📊 AI1 position check - PRO keywords: ${hasProKeywords}, CON keywords: ${hasConKeywords}`);
+
+    debate.push(response);
+    return completion;
 }
 
 async function get_ai2_response(prompt, debate) {
-  console.log("Getting AI2 response");
-  let completion = await openai.chat.completions.create({
-    model: AI_MODEL,
-    messages: [
-      {
-        role: 'system',
-        content: ai2_prompt,
-      },
-      {
+    console.log("🔴 Getting AI2 (CON) response");
+    console.log(`📝 Current debate length: ${debate.length}`);
+
+    let messages = [
+        {
+            role: 'system',
+            content: `${ai2_prompt}\n\nCRITICAL REMINDER: You are AI WARRIOR 2 - ALWAYS CON. Never defend PRO positions. Always attack PRO arguments and defend CON positions.`,
+        }
+    ];
+
+    // Include conversation history for context
+    const context = debate.join('\n\n');
+    messages.push({
         role: 'user',
-        content: debate[debate.length - 1],
-      },
-    ],
-    max_tokens: 1000,
-  });
-  debate.push(completion.choices[0].message.content);
-  return completion;
+        content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 2 (CON side). You must attack AI WARRIOR 1's PRO arguments and defend CON positions. Never switch sides or defend PRO positions.`
+    });
+
+    console.log("🔄 AI2 responding with full context, maintaining CON stance");
+
+    const completion = await openai.chat.completions.create({
+        model: AI_MODEL,
+        messages: messages,
+        max_tokens: 1000,
+    });
+
+    const response = completion.choices[0].message.content;
+    console.log(`✅ AI2 response generated (${response.length} chars)`);
+
+    // Log position consistency check
+    const hasProKeywords = /\b(pro|good|benefit|advantage|positive|support|yes|agree|right)\b/i.test(response);
+    const hasConKeywords = /\b(con|bad|harm|disadvantage|negative|against|no|disagree|wrong)\b/i.test(response);
+    console.log(`📊 AI2 position check - PRO keywords: ${hasProKeywords}, CON keywords: ${hasConKeywords}`);
+
+    debate.push(response);
+    return completion;
 }
 
 const app = express();

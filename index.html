@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI FightArena</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="arena-container">
+        <!-- Header Section -->
+        <header class="arena-header">
+            <div class="header-content">
+                <h1 class="arena-title">
+                    <i class="fas fa-brain"></i>
+                    AI FightArena
+                </h1>
+                <p class="arena-subtitle">Watch artificial intelligences battle in heated debates</p>
+            </div>
+            <div class="header-decoration">
+                <div class="glow-sphere"></div>
+                <div class="glow-sphere"></div>
+                <div class="glow-sphere"></div>
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+        <section class="control-panel">
+            <div class="control-card">
+                <h3 class="control-title">
+                    <i class="fas fa-cogs"></i>
+                    Battle Settings
+                </h3>
+                <div class="control-grid">
+                    <div class="control-group">
+                        <label for="debate-theme" class="control-label">
+                            <i class="fas fa-topic"></i>
+                            Debate Theme
+                        </label>
+                        <input type="text" id="debate-theme" class="control-input" placeholder="Enter debate topic..." value="Christianity">
+                    </div>
+                    <div class="control-group">
+                        <label for="max-rounds" class="control-label">
+                            <i class="fas fa-clock"></i>
+                            Max Rounds
+                        </label>
+                        <input type="number" id="max-rounds" class="control-input" min="1" max="50" value="10">
+                    </div>
+                    <div class="control-group">
+                        <label for="search-query" class="control-label">
+                            <i class="fas fa-search"></i>
+                            Search Debates
+                        </label>
+                        <input type="text" id="search-query" class="control-input" placeholder="Search debate history...">
+                    </div>
+                </div>
+                <div class="control-actions">
+                    <button id="start-debate" class="action-btn primary">
+                        <i class="fas fa-play"></i>
+                        Start Debate
+                    </button>
+                    <button id="stop-debate" class="action-btn danger" disabled>
+                        <i class="fas fa-stop"></i>
+                        Stop Debate
+                    </button>
+                    <button id="reset-debate" class="action-btn secondary">
+                        <i class="fas fa-refresh"></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Debate Arena -->
+        <section class="debate-arena">
+            <div class="arena-stage">
+                <div class="stage-lights">
+                    <div class="stage-light left"></div>
+                    <div class="stage-light right"></div>
+                </div>
+
+                <div class="fighters">
+                    <div class="fighter ai1-fighter">
+                        <div class="fighter-avatar">
+                            <i class="fas fa-robot"></i>
+                            <div class="avatar-glow"></div>
+                        </div>
+                        <h3 class="fighter-name">AI Warrior 1</h3>
+                        <div class="fighter-status">
+                            <div class="status-indicator" id="ai1-status"></div>
+                            <span class="status-text">Ready</span>
+                        </div>
+                    </div>
+
+                    <div class="vs-indicator">
+                        <div class="vs-circle">
+                            <span>VS</span>
+                        </div>
+                    </div>
+
+                    <div class="fighter ai2-fighter">
+                        <div class="fighter-avatar">
+                            <i class="fas fa-robot"></i>
+                            <div class="avatar-glow"></div>
+                        </div>
+                        <h3 class="fighter-name">AI Warrior 2</h3>
+                        <div class="fighter-status">
+                            <div class="status-indicator" id="ai2-status"></div>
+                            <span class="status-text">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debate Display -->
+            <div class="debate-display">
+                <div class="display-header">
+                    <h3 class="display-title">
+                        <i class="fas fa-comments"></i>
+                        Debate Transcript
+                    </h3>
+                    <div class="round-counter">
+                        Round: <span id="current-round">0</span>/<span id="total-rounds">10</span>
+                    </div>
+                </div>
+
+                <div class="transcript-container" id="transcript">
+                    <div class="welcome-message">
+                        <div class="message-content">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Welcome to AI FightArena! Configure the debate theme and maximum rounds, then click "Start Debate" to begin the battle.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrated Response Controls -->
+                <div class="response-controls" id="response-controls" style="display: none;">
+                    <div class="response-controls-header">
+                        <span class="controls-label">Which AI should respond?</span>
+                        <div class="round-indicator">
+                            Round <span id="response-round">1</span>
+                        </div>
+                    </div>
+                    <div class="response-buttons">
+                        <button id="generate-ai1" class="response-btn ai1-response-btn" disabled>
+                            <div class="btn-content">
+                                <i class="fas fa-robot"></i>
+                                <div class="btn-text">
+                                    <span class="btn-title">AI Warrior 1</span>
+                                    <small class="btn-subtitle">Generate Response</small>
+                                </div>
+                            </div>
+                            <div class="btn-glow"></div>
+                        </button>
+                        <button id="generate-ai2" class="response-btn ai2-response-btn" disabled>
+                            <div class="btn-content">
+                                <i class="fas fa-robot"></i>
+                                <div class="btn-text">
+                                    <span class="btn-title">AI Warrior 2</span>
+                                    <small class="btn-subtitle">Generate Response</small>
+                                </div>
+                            </div>
+                            <div class="btn-glow"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="display-footer">
+                    <div class="typing-indicator" id="typing-indicator" style="display: none;">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="typing-text">AI is thinking...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Panel -->
+        <section class="stats-panel">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Total Rounds</h4>
+                        <span class="stat-value" id="total-rounds-stat">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Debate Duration</h4>
+                        <span class="stat-value" id="debate-duration">00:00</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Search Results</h4>
+                        <span class="stat-value" id="search-results">0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Y2K Footer Decoration -->
+        <footer class="y2k-footer">
+            <div class="footer-content">
+                <div class="footer-banner">
+                    <span class="blink">🚧 UNDER CONSTRUCTION 🚧</span>
+                </div>
+                <div class="footer-stats">
+                    <span>Visitors: <span class="counter">1337</span></span>
+                    <span>Last Updated: <span id="last-updated"></span></span>
+                    <span>Best viewed in: <span class="browser">Netscape Navigator</span></span>
+                </div>
+                <div class="footer-graphics">
+                    <div class="animated-gif">⚡</div>
+                    <div class="animated-gif">🔥</div>
+                    <div class="animated-gif">💥</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Debug: Check if HTML loads
+        console.log('Arena HTML loaded successfully');
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

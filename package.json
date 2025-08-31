@@ -1,0 +1,44 @@
+{
+  "name": "ai-fightarena",
+  "version": "1.0.0",
+  "description": "AI FightArena - Real-time AI debate platform with beautiful Y2K-inspired UI",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "server": "node server.js",
+    "dev": "node server.js",
+    "frontend": "python -m http.server 8000",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "ai",
+    "debate",
+    "chatbot",
+    "openai",
+    "gemini",
+    "real-time",
+    "web-app",
+    "y2k",
+    "retro"
+  ],
+  "author": "mercurialw0rld",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mercurialw0rld/ai-fightarena.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mercurialw0rld/ai-fightarena/issues"
+  },
+  "homepage": "https://github.com/mercurialw0rld/ai-fightarena#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^4.18.2",
+    "openai": "^5.16.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

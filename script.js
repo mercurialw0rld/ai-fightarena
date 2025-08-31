@@ -9,7 +9,19 @@ class DebateArena {
         this.debateHistory = [];
         this.searchResults = 0;
         this.debateId = null;
-        this.apiBaseUrl = 'http://localhost:3001/api';
+        // Dynamic API URL for both local and production
+        const protocol = window.location.protocol;
+        const hostname = window.location.hostname;
+        const port = window.location.port;
+
+        // In production (Render), use same domain without port
+        // In local development, use localhost:3001
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            this.apiBaseUrl = `${protocol}//${hostname}:3001/api`;
+        } else {
+            // Production - use same domain and port as current page
+            this.apiBaseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}/api`;
+        }
 
         this.initializeElements();
         this.setupEventListeners();

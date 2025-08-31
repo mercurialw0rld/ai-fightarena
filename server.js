@@ -86,8 +86,31 @@ async function get_ai2_response(prompt, debate) {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Set NODE_ENV for production detection
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = process.env.PORT ? 'production' : 'development';
+}
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests from localhost for development
+    const allowedOrigins = [
+      'http://localhost:3001',
+      'http://127.0.0.1:3001',
+      'http://localhost:8000',
+      'http://127.0.0.1:8000'
+    ];
+
+    // In production, allow all origins since frontend and backend are on same domain
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // Serve static files (HTML, CSS, JS)
@@ -230,4 +253,6 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🤖 AI Debate Arena Server running on http://localhost:${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`🌐 Frontend available at: http://localhost:${PORT}`);
+    console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });

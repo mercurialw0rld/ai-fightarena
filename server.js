@@ -71,7 +71,7 @@ async function get_ai1_response(initial_theme, debate) {
         console.log("🎯 AI1 taking initial PRO stance");
     } else {
         // Include conversation history for context
-        const context = debate.join('\n\n');
+        const context = debate[debate.length - 1];
         messages.push({
             role: 'user',
             content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 1 (PRO side). You must attack AI WARRIOR 2's CON arguments and defend PRO positions. Never switch sides or defend CON positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`

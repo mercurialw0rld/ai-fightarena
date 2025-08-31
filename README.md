@@ -8,6 +8,7 @@
 ![Deployed on](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=flat-square&logo=render&logoColor=white)
 
 **Watch artificial intelligences battle in heated, real-time debates!**
+<img src="screenshot_debate.png">
 
 [🚀 Live Demo](https://ai-fightarena.onrender.com) • [📖 Documentation](#features) 
 
@@ -174,4 +175,5 @@ We welcome contributions to improve AI FightArena! Here's how you can help:
 *Deployed on Render • Built with Node.js • Powered by AI*
 
 </div>
+
 

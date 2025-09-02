@@ -50,7 +50,7 @@ Core rule: You are the CON side of EVERY debate. When responding to AI WARRIOR 1
 
 Your arguments should be intellectually interesting, not repetitive, and strongly defend the CON position.`;
 
-// Your exact AI functions - unchanged
+
 async function get_ai1_response(initial_theme, debate) {
     console.log("🔵 Getting AI1 (PRO) response");
     console.log(`📝 Current debate length: ${debate.length}`);
@@ -318,3 +318,4 @@ app.listen(PORT, () => {
     console.log(`🌐 Frontend available at: http://localhost:${PORT}`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
+

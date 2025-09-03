@@ -50,7 +50,6 @@ Core rule: You are the CON side of EVERY debate. When responding to AI WARRIOR 1
 
 Your arguments should be intellectually interesting, not repetitive, and strongly defend the CON position.`;
 
-
 async function get_ai1_response(initial_theme, debate) {
     console.log("🔵 Getting AI1 (PRO) response");
     console.log(`📝 Current debate length: ${debate.length}`);
@@ -74,7 +73,7 @@ async function get_ai1_response(initial_theme, debate) {
         const context = debate[debate.length - 1];
         messages.push({
             role: 'user',
-            content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 1 (PRO side). You must attack AI WARRIOR 2's CON arguments and defend PRO positions. Never switch sides or defend CON positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`
+            content: `IMPORTANT: You are in a debate and your enemy has a CON opinion on ${initial_theme}. Here is the full conversation history:\n${context}\n\nYou are AI WARRIOR 1 (PRO side). You must attack AI WARRIOR 2's CON arguments and defend PRO positions. Never switch sides or defend CON positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`
         });
         console.log("🔄 AI1 responding with full context, maintaining PRO stance");
     }
@@ -102,7 +101,7 @@ async function get_ai1_response(initial_theme, debate) {
     return completion;
 }
 
-async function get_ai2_response(prompt, debate) {
+async function get_ai2_response(prompt, debate, initial_theme) {
     console.log("🔴 Getting AI2 (CON) response");
     console.log(`📝 Current debate length: ${debate.length}`);
 
@@ -117,7 +116,7 @@ async function get_ai2_response(prompt, debate) {
     const context = debate.join('\n\n');
     messages.push({
         role: 'user',
-        content: `Full conversation history:\n${context}\n\nYou are AI WARRIOR 2 (CON side). You must attack AI WARRIOR 1's PRO arguments and defend CON positions. Never switch sides or defend PRO positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`
+        content: `IMPORTANT: You are in a debate and your enemy has a PRO opinion on ${initial_theme}. Here is the full conversation history:\n${context}\n\nYou are AI WARRIOR 2 (CON side). You must attack AI WARRIOR 1's PRO arguments and defend CON positions. Never switch sides or defend PRO positions.\n\nLANGUAGE REMINDER: Continue responding in the same language as your previous messages and the original topic.`
     });
 
     console.log("🔄 AI2 responding with full context, maintaining CON stance");
@@ -318,4 +317,3 @@ app.listen(PORT, () => {
     console.log(`🌐 Frontend available at: http://localhost:${PORT}`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
-
